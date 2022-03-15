@@ -1,7 +1,7 @@
 
 
-#ifndef LISTA_DINA_H_
-#define LISTA_DINA_H_
+#ifndef LISTA_DINA_HPP_
+#define LISTA_DINA_HPP_
 #include <cassert>
 
 template<typename t> class lista{
