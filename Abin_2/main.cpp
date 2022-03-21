@@ -1,17 +1,12 @@
-#include "Abin_d.hpp"
+#include "EJ4.hpp"
 #include "abin_E-S.hpp"
-#include "EJ3.hpp"
 #include <iostream>
 
 int main(){
-    Abin<tOp> A;
-    tOp fin;    //Será fin si el operador es f
-    fin.f = int();
-    fin.op = 'f';
+    Abin<char> A(4, '-');
 
-    rellenarAbin(A, fin);
-    
-    std::cout << "El resultado es: " << operacionAbin(A);
+    rellenarAbin(A, '-');
+    imprimirAbin(A);
     
     return 0;
 }

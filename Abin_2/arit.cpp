@@ -1,8 +1,9 @@
 #include "arit.hpp"
 
-int powi(int a, int b){
+unsigned powi(unsigned a, unsigned b){
+    unsigned res = 1;
     for(unsigned i = 0; i < b; i++)
-        a *= a;
+        res *= a;
     
-    return a;
+    return res;
 }
