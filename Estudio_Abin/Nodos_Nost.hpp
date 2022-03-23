@@ -32,15 +32,13 @@ int numNost_Rec(typename Abin<t>::nodo n, const Abin<t>& A){
         if(esNost(n, A))    //Nunca le llegará un nulo, no lo debemos comprobar
             return 1 + numNost_Rec(A.hijoIzqdo(n), A) + numNost_Rec(A.hijoDrcho(n), A);
         else
-            return numNost_Rec(A.hijoIzqdo(n), A) + numNost_Rec(A.hijoDrcho(n), A);
+            return 0 + numNost_Rec(A.hijoIzqdo(n), A) + numNost_Rec(A.hijoDrcho(n), A);
     }
 }
 
 template<typename t>
 bool esNost(typename Abin<t>::nodo n, const Abin<t>& A){
-    int ant = antecesoresP(n, A), des = descendientesP(n, A) - 1;
-    std::cout << "NODO '" << A.elemento(n) << "' : " << ant << " antecesores y " << des << " descendientes propios" << std::endl;
-    return (ant > des);
+    return (antecesoresP(n, A) > descendientesP(n, A) - 1);
 }
 
 template<typename t>
