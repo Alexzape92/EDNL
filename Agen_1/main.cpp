@@ -1,13 +1,13 @@
 #include <iostream>
-#include "Agen_v.hpp"
+#include "Agen_d.hpp"
 #include "agen_E-S.hpp"
-#include "EJ3.hpp"
+//#include "EJ3.hpp"
 
 int main() {
-    Agen<char> A(20);
+    Agen<char> A;
 
-    rellenarAgen(A, '.');
-    std::cout << "La altura es " << AlturaNodoAgen(A.raiz(), A) << std::endl;
+    rellenarAgen(A, '-');
+    imprimirAgen(A);
 
     return 0;
 }

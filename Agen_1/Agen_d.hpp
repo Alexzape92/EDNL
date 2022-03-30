@@ -35,11 +35,15 @@ private:
         t elto;
         celda *padre, *hizq, *hermd;
 
-        celda(const t& x = t(), celda *p = nullptr, celda *he = nullptr), celda *hi = nullptr: elto(x), 
+        celda(const t& x = t(), celda *p = nullptr, celda *he = nullptr, celda *hi = nullptr): elto(x), 
         padre(p), hizq(hi), hermd(he) {}
     };
 
     celda *r;
+
+    //Métodos privados
+    friend void copiar(nodo n1, nodo n2, Agen& A1, const Agen& A2);
+    friend void borrarNodos(nodo n, Agen& A);
 };
 
 template<typename t>
@@ -47,6 +51,23 @@ const typename Agen<t>::nodo Agen<t>::NODO_NULO {nullptr};
 
 template<typename t>
 Agen<t>::Agen(): r(nullptr){}
+
+template<typename t>
+Agen<t>::Agen(const Agen<t>& A): r(nullptr){
+    if(A.r != nullptr){
+        r = new celda;
+        copiar(r, A.r, *this, A);
+    }
+}
+
+template<typename t>
+Agen<t>& Agen<t>::operator =(const Agen<t>& A){
+    if(this != &A){
+        this->~Agen();
+        if(!A.arbolVacio())
+            copiar(raiz(), A.raiz(), *this, A);
+    }
+}
 
 template<typename t>
 void Agen<t>::insertarRaiz(const t& x){
@@ -148,6 +169,37 @@ typename Agen<t>::nodo Agen<t>::hermDrcho(nodo n) const{
     assert(n != NODO_NULO);
 
     return n->hermd;
+}
+
+
+
+//MÉTODOS PRIVADOS--------------------------------------------------
+template<typename t>
+void copiar(typename Agen<t>::nodo n1, typename Agen<t>::nodo n2, Agen<t>& A1, const Agen<t>& A2){
+    if(n2 != nullptr){
+        n1 = new celda{celda(A2.elemento(n2))};
+
+        typename Agen<t>::nodo hijo1 {A1.hijoIzqdo(n1)}, hijo2 {A2.hijoIzqdo(n2)};
+        while(hijo2 != nullptr){
+            copiar(hijo1, hijo2, A1, A2);
+            hijo1 = A1.hermDrcho(n1);
+            hijo2 = A2.hermDrcho(n2);
+        }
+    }
+}
+
+template<typename t>
+void borrarNodos(typename Agen<t>::nodo n, Agen<t>& A){
+    if(n != nullptr){
+        typename Agen<t>::nodo hijo = A.hijoIzqdo(n);
+        while(hijo != nullptr){
+            borrarNodos(hijo, A);
+            hijo = A.hermDrcho(n);
+        }
+
+        delete n;
+        n = nullptr;
+    }
 }
 
 
