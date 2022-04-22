@@ -3,10 +3,6 @@
 #include <cassert>
 #include <cstdlib>
 
-/*-------------------------------------------------------
-IMPLEMENTAR CONSTRUCTOR COPIA, OP ASIGNACIÓN Y DESTRUCTOR
----------------------------------------------------------*/
-
 template<typename t>
 class Agen{
 struct celda;
@@ -35,11 +31,14 @@ private:
         t elto;
         celda *padre, *hizq, *hermd;
 
-        celda(const t& x = t(), celda *p = nullptr, celda *he = nullptr), celda *hi = nullptr: elto(x), 
+        celda(const t& x = t(), celda *p = nullptr, celda *he = nullptr, celda *hi = nullptr): elto(x), 
         padre(p), hizq(hi), hermd(he) {}
     };
 
     celda *r;
+
+    nodo copiar(nodo n);
+    void borrarNodos(nodo& n);
 };
 
 template<typename t>
@@ -149,6 +148,63 @@ typename Agen<t>::nodo Agen<t>::hermDrcho(nodo n) const{
 
     return n->hermd;
 }
+
+template<typename t>
+Agen<t>::Agen(const Agen<t>& A): r{nullptr}{
+    r = copiar(A.r);
+}
+
+template<typename t>
+Agen<t>& Agen<t>::operator =(const Agen<t>& A){
+    if(this != &A){
+        this->~Agen();
+        r = copiar(A.r);
+    }
+
+    return *this;
+}
+
+template<typename t>
+Agen<t>::~Agen(){
+    borrarNodos(r);
+}
+
+//PRIVADAS-------------------------------------------
+template<typename t>
+typename Agen<t>::nodo Agen<t>::copiar(typename Agen<t>::nodo n){
+    nodo m = NODO_NULO;
+    if(n != NODO_NULO){
+        m = new celda(n->elto);
+        if(n->hizq != NODO_NULO){
+            m->hizq = copiar(n->hizq);  //Copiamos el primer subárbol
+            m->hizq->padre = m;
+
+            nodo hijo = m->hizq, hmder = n->hizq->hermd;
+            while(hmder != NODO_NULO){
+                hijo = hijo->hermd = copiar(hmder);
+                hijo->padre = m;
+                hmder = hmder->hermd;
+            }
+        }
+    }
+    return m;
+}
+
+template<typename t>
+void Agen<t>::borrarNodos(nodo& n){
+    if(n != NODO_NULO){
+        nodo hijo = n->hizq;
+        while(hijo != NODO_NULO){
+            borrarNodos(hijo);
+            hijo = hijo->hermd;
+        }
+        delete n;
+        n = nullptr;
+    }
+}
+
+
+
 
 
 #endif

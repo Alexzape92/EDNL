@@ -1,6 +1,6 @@
 #ifndef EJ1_HPP_
 #define EJ1_HPP_
-#include "Agen_v.hpp"
+#include "Agen_d.hpp"
 #include <algorithm>
 
 template<typename t>
@@ -31,7 +31,7 @@ int gradoAgen_Rec(typename Agen<t>::nodo n, const Agen<t>& A){
         typename Agen<t>::nodo hijo = A.hijoIzqdo(n, A);
         while(hijo != Agen<t>::NODO_NULO){
             gr = std::max(gr, gradoAgen_Rec(hijo, A));
-            hijo = A.hermDrcho(hijo, A);
+            hijo = A.hermDrcho(hijo);
         }
         return gr;
     }
