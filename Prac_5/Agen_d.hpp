@@ -3,6 +3,10 @@
 #include <cassert>
 #include <cstdlib>
 
+/*-------------------------------------------------------
+IMPLEMENTAR CONSTRUCTOR COPIA, OP ASIGNACIÓN Y DESTRUCTOR
+---------------------------------------------------------*/
+
 template<typename t>
 class Agen{
 struct celda;
@@ -38,8 +42,8 @@ private:
     celda *r;
 
     //Métodos privados
-    nodo copiar(nodo n);
-    void borrarNodos(nodo& n);
+    void copiar(nodo n1, nodo n2, const Agen& A2);
+    void borrarNodos(nodo n);
 };
 
 template<typename t>
@@ -168,86 +172,32 @@ typename Agen<t>::nodo Agen<t>::hermDrcho(nodo n) const{
 }
 
 template<typename t>
-Agen<t>::Agen(const Agen<t>& A): r{nullptr}{
-    r = copiar(A.r);
-}
-
-template<typename t>
-Agen<t>& Agen<t>::operator =(const Agen<t>& A){
-    if(this != &A){
-        this->~Agen();
-        r = copiar(A.r);
-    }
-
-    return *this;
-}
-
-template<typename t>
 Agen<t>::~Agen(){
-    borrarNodos(r);
+    borrarNodos(raiz());
 }
-
-//PRIVADAS-------------------------------------------
-template<typename t>
-typename Agen<t>::nodo Agen<t>::copiar(typename Agen<t>::nodo n){
-    nodo m = NODO_NULO;
-    if(n != NODO_NULO){
-        m = new celda(n->elto);
-        if(n->hizq != NODO_NULO){
-            m->hizq = copiar(n->hizq);  //Copiamos el primer subárbol
-            m->hizq->padre = m;
-
-            nodo hijo = m->hizq, hmder = n->hizq->hermd;
-            while(hmder != NODO_NULO){
-                hijo = hijo->hermd = copiar(hmder);
-                hijo->padre = m;
-                hmder = hmder->hermd;
-            }
-        }
-    }
-    return m;
-}
-
-template<typename t>
-void Agen<t>::borrarNodos(nodo& n){
-    if(n != NODO_NULO){
-        nodo hijo = n->hizq;
-        while(hijo != NODO_NULO){
-            borrarNodos(hijo);
-            hijo = hijo->hermd;
-        }
-        delete n;
-        n = nullptr;
-    }
-}
-
-
-
-
-
 
 //MÉTODOS PRIVADOS--------------------------------------------------
 template<typename t>
-void copiar(typename Agen<t>::nodo n1, typename Agen<t>::nodo n2, Agen<t>& A1, const Agen<t>& A2){
+void Agen<t>::copiar(typename Agen<t>::nodo n1, typename Agen<t>::nodo n2, const Agen<t>& A2){
     if(n2 != nullptr){
         n1 = new celda{celda(A2.elemento(n2))};
 
-        typename Agen<t>::nodo hijo1 {A1.hijoIzqdo(n1)}, hijo2 {A2.hijoIzqdo(n2)};
+        typename Agen<t>::nodo hijo1 {hijoIzqdo(n1)}, hijo2 {A2.hijoIzqdo(n2)};
         while(hijo2 != nullptr){
-            copiar(hijo1, hijo2, A1, A2);
-            hijo1 = A1.hermDrcho(n1);
+            copiar(hijo1, hijo2, *this, A2);
+            hijo1 = hermDrcho(n1);
             hijo2 = A2.hermDrcho(n2);
         }
     }
 }
 
 template<typename t>
-void borrarNodos(typename Agen<t>::nodo n, Agen<t>& A){
+void Agen<t>::borrarNodos(typename Agen<t>::nodo n){
     if(n != nullptr){
-        typename Agen<t>::nodo hijo = A.hijoIzqdo(n);
+        typename Agen<t>::nodo hijo = hijoIzqdo(n);
         while(hijo != nullptr){
-            borrarNodos(hijo, A);
-            hijo = A.hermDrcho(n);
+            hijo = hermDrcho(n);
+            borrarNodos(hijo);
         }
 
         delete n;
