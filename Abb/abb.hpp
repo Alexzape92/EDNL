@@ -12,6 +12,7 @@ public:
     const Abb& buscar(const t& x) const;
     void insertar(const t& x);
     void eliminar(const t& x);
+    void eliminar_todo(const t& x);
     bool vacio() const {return r == nullptr;}
     const t& elemento() const {assert(r != nullptr); return r->elto;}
     const Abb& izqdo() const {assert(r != nullptr); return r->izq;}
@@ -22,14 +23,13 @@ private:
         t elto;
         Abb izq, der;
 
-        celda(const t& x = t(), Abb AI = Abb(), Abb AD = Abb()): elto{x}, izq{AI}, der(AD) {}
+        arbol(const t& x = t(), Abb AI = Abb(), Abb AD = Abb()): elto{x}, izq{AI}, der(AD) {}
     };
     
     arbol *r;
 
     //METODOS PRIVADOS
     t borrarMin();
-    void copiar(const Abb<t>& A);
 };
 
 template<typename t>
@@ -37,8 +37,25 @@ Abb<t>::Abb(): r{nullptr}{}
 
 template<typename t>
 Abb<t>::Abb(const Abb<t>& A): r{nullptr}{
-    if(A.r != nullptr){
+    if(A.r != nullptr)
+        r = new arbol(*A.r);
+}
 
+template<typename t>
+Abb<t>& Abb<t>::operator =(const Abb<t>& A){
+    if(this != &A){
+        this->~Abb();
+        if(A.r != nullptr)
+            r = new arbol(*A.r);
+    }
+    return *this;
+}
+
+template<typename t>
+Abb<t>::~Abb(){
+    if(r != nullptr){
+        delete r;
+        r = nullptr;
     }
 }
 
@@ -55,7 +72,7 @@ const Abb<t>& Abb<t>::buscar(const t& x) const{
 template<typename t>
 void Abb<t>::insertar(const t& x){
     if(r == nullptr)
-        r = new celda(x);
+        r = new arbol(x);
     else{
         if(x < r->elto)
             r->izq.insertar(x);
@@ -82,8 +99,8 @@ void Abb<t>::eliminar(const t& x){
                 delete r;
                 r = ori;
             }
-            else if(dest.r->der.r == nullptr){
-                arbol *ori = r->izq.r;izq
+            else if(r->der.r == nullptr){
+                arbol *ori = r->izq.r;
                 r->izq.r = nullptr;     //Evita destruir el subárbol izquierdo
                 delete r;
                 r = ori;
@@ -116,21 +133,5 @@ t Abb<t>::borrarMin(){
         return r->izq.borrarMin();
     }
 }
-
-template<typename t>
-void Abb<t>::copiar(const Abb<t>& A){
-    if(r != nullptr){
-        r->elto = A.r->elto;
-        if(A.r->izq.r != nullptr){
-            r->izq.r = new arbol();
-            r->izq.copiar(A.r->izq);
-        }
-        if(A.r->der.r != nullptr){
-            r->der.r = new arbol();
-            r->der.copiar(A.r->der);
-        }
-    }
-}
-
 
 #endif
