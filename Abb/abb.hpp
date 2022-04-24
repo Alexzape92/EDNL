@@ -61,12 +61,14 @@ Abb<t>::~Abb(){
 
 template<typename t>
 const Abb<t>& Abb<t>::buscar(const t& x) const{
-    if(r->elto == x)
+    if(r == nullptr)
         return *this;
-    else if(r->elto < x)
+    else if(r->elto > x)
         return r->izq.buscar(x);
-    else
+    else if(r->elto < x)
         return r->der.buscar(x);
+    else
+        return *this;
 }
 
 template<typename t>
@@ -118,20 +120,15 @@ template<typename t>
 t Abb<t>::borrarMin(){
     if(r->izq.r == nullptr){
         t res = r->elto;
-        if(r->der.r != nullptr){
-            arbol dere = r->der;
-            delete r;
-            r = dere;
-        }
-        else{
-            delete r;
-            r = nullptr;
-        }
+        arbol *dere = r->der.r;
+        r->der.r = nullptr;
+        delete r;
+        r = dere;
+
         return res;
     }
-    else{
+    else
         return r->izq.borrarMin();
-    }
 }
 
 #endif

@@ -1,14 +1,16 @@
 #include "abb.hpp"
 #include "Abb-E_S.hpp"
-#include "EJ2.hpp"
+#include "EJ5.hpp"
 #include <iostream>
 
 int main(){
-    Abb<int> A;
+    Abb<int> A, B;
 
     rellenarAbb(A, -1);
-    equilibrar(A);
-    imprimirAbb(A);
+    rellenarAbb(B, -1);
+    Conjunto<int> cA(A), cB(B);
+
+    imprimirAbb((cA ^ cB).arb);
 
     return 0;
 }
